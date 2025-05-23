@@ -1,0 +1,12 @@
+services:
+  go-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: go-dev
+    volumes:
+      - .:/workspace
+      - ~/.gitconfig:/home/dev/.gitconfig:ro
+    working_dir: /workspace
+    user: dev
+    command: sleep infinity
