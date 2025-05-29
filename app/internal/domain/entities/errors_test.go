@@ -24,9 +24,7 @@ func TestInvalidError_Error(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			e := &entities.InvalidError{
-				Message: tt.fields.Message,
-			}
+			e := entities.NewInvalidInputError(tt.fields.Message)
 			if got := e.Error(); got != tt.want {
 				t.Errorf("InvalidError.Error() = %v, want %v", got, tt.want)
 			}

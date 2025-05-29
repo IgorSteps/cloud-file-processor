@@ -1,11 +1,20 @@
 package handlers
 
-import "net/http"
+import (
+	"log/slog"
+	"net/http"
+)
 
 type HandlerFactory struct {
-	uploadFile *UploadFile
+	backupLogger *slog.Logger
+}
+
+func NewHandlerFactory(backupLogger *slog.Logger) *HandlerFactory {
+	return &HandlerFactory{
+		backupLogger: backupLogger,
+	}
 }
 
 func (s *HandlerFactory) UploadFile() http.Handler {
-	return s.uploadFile
+	return NewUploadFile(s.backupLogger)
 }
