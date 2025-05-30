@@ -1,0 +1,2 @@
+# Collapse files in vendor directory in PRs
+./vendor/** linguist-generated=true

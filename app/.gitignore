@@ -1,0 +1,8 @@
+# No binaries
+./dist/
+
+# No IDE settings
+.vscode/
+
+# No Mac OS-specific
+.DS_Store
