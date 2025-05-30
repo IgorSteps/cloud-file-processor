@@ -9,7 +9,9 @@ package main
 import (
 	"app/internal/adapters/rest/handlers"
 	"app/internal/adapters/rest/routes"
+	"app/internal/drivers/otel"
 	"app/internal/drivers/restserver"
+	"app/internal/drivers/wireproviders"
 	"log/slog"
 )
 
@@ -18,8 +20,13 @@ import (
 func SetupApp() (*App, error) {
 	logger := slog.Default()
 	handlerFactory := handlers.NewHandlerFactory(logger)
-	router := routes.NewRouter(handlerFactory, logger)
+	v := wireproviders.ProvideMiddlewares()
+	router := routes.NewRouter(handlerFactory, v)
 	server := restserver.NewServerFromConfig(router)
-	app := NewApp(server, logger)
+	tracerProviderShutdown, err := otel.SetupOtel()
+	if err != nil {
+		return nil, err
+	}
+	app := NewApp(server, logger, tracerProviderShutdown)
 	return app, nil
 }

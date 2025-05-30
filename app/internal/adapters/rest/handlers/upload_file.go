@@ -11,7 +11,7 @@ import (
 
 type UploadFile struct {
 	backupLogger *slog.Logger
-	fileUploader FileUploader
+	//fileUploader FileUploader
 }
 
 func NewUploadFile(backupLogger *slog.Logger) *UploadFile {
@@ -59,5 +59,14 @@ func (s *UploadFile) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// }
 
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode("boom")
+	err = json.NewEncoder(w).Encode("hi")
+	if err != nil {
+		s.backupLogger.ErrorContext(r.Context(),
+			"failed to encode response",
+			"response", "TODO",
+			"error", err,
+		)
+		http.Error(w, "response body is invalid", http.StatusInternalServerError)
+		return
+	}
 }
