@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -20,7 +21,7 @@ func main() {
 func run(ctx context.Context) int {
 	app, err := SetupApp()
 	if err != nil {
-		log.Printf("failed to initlise the app: %v", err)
+		log.Printf("failed to initialize the app: %v", err)
 		return EXIT_FAILURE
 	}
 
@@ -31,7 +32,8 @@ func run(ctx context.Context) int {
 
 	// Run the REST server.
 	go func() {
-		if err := app.server.Run(); err != nil {
+		// ListenAndServe always returns a non-nil error. In case of Server.Shutdown it returns a ErrServerClosed error.
+		if err := app.server.Run(); err != http.ErrServerClosed {
 			app.logger.ErrorContext(ctx, "failed to start REST server", "error", err)
 			stop()
 		}
@@ -46,7 +48,10 @@ func run(ctx context.Context) int {
 
 	app.logger.InfoContext(ctx, "started graceful shutdown of cloud-file-rest")
 
-	// TODO: graceful shutdown of the REST server here
+	err = app.server.Shutdown(ctx)
+	if err != nil {
+		app.logger.ErrorContext(ctx, "failed to shutdown REST server", "error", err)
+	}
 
 	err = app.tracerProviderShutdown(ctx)
 	if err != nil {

@@ -1,6 +1,7 @@
 package restserver
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -11,17 +12,22 @@ type ServerConfig struct {
 }
 
 type Server struct {
-	Router  chi.Router
-	Address string
+	underlying http.Server
 }
 
 func NewServerFromConfig(config *ServerConfig, router chi.Router) *Server {
 	return &Server{
-		Router:  router,
-		Address: config.Address,
+		underlying: http.Server{
+			Addr:    config.Address,
+			Handler: router,
+		},
 	}
 }
 
 func (s *Server) Run() error {
-	return http.ListenAndServe(s.Address, s.Router)
+	return s.underlying.ListenAndServe()
+}
+
+func (s *Server) Shutdown(ctx context.Context) error {
+	return s.underlying.Shutdown(ctx)
 }
