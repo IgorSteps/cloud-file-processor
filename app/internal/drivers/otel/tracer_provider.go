@@ -26,7 +26,7 @@ func SetupOtel() (TracerProviderShutdown, error) {
 	// Register trace provider.
 	otel.SetTracerProvider(tracerProvider)
 
-	// Register W3C Trace Context propogator.
+	// Register W3C Trace Context propagator.
 	otel.SetTextMapPropagator(propagation.TraceContext{})
 
 	return tracerProvider.Shutdown, nil

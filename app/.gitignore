@@ -1,5 +1,5 @@
 # No binaries
-./dist/
+dist/
 
 # No IDE settings
 .vscode/

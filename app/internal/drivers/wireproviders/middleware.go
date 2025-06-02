@@ -5,8 +5,8 @@ import (
 	"net/http"
 )
 
-func ProvideMiddlewares() []func(http.Handler) http.Handler {
+func ProvideMiddlewares(config middleware.TracingMiddlewareConfig) []func(http.Handler) http.Handler {
 	return []func(http.Handler) http.Handler{
-		middleware.TracingMiddleware(),
+		middleware.NewTracingMiddlewareFromConfig(config),
 	}
 }

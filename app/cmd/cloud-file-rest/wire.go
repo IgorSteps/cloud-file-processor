@@ -17,6 +17,9 @@ import (
 
 func SetupApp() (*App, error) {
 	wire.Build(
+		LoadConfig,
+		wire.FieldsOf(new(*Config), "App", "Server", "Tracing"),
+
 		slog.Default,
 		otel.SetupOtel,
 

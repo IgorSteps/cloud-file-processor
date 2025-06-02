@@ -6,7 +6,6 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 )
 
 const (
@@ -30,11 +29,11 @@ func run(ctx context.Context) int {
 
 	app.logger.InfoContext(ctx, "starting cloud-file-rest")
 
-	// Start the REST server
+	// Run the REST server.
 	go func() {
 		if err := app.server.Run(); err != nil {
 			app.logger.ErrorContext(ctx, "failed to start REST server", "error", err)
-			// return EXIT_FAILURE ?
+			stop()
 		}
 	}()
 
@@ -42,7 +41,7 @@ func run(ctx context.Context) int {
 
 	// Start a fresh context derived from the parent context (ignore cancellation) as the old one will have already
 	// been canceled to avoid immediate exit.
-	ctx, cancel := context.WithTimeout(context.WithoutCancel(ctx), 30*time.Second)
+	ctx, cancel := context.WithTimeout(context.WithoutCancel(ctx), app.shutdownTimeout)
 	defer cancel()
 
 	app.logger.InfoContext(ctx, "started graceful shutdown of cloud-file-rest")

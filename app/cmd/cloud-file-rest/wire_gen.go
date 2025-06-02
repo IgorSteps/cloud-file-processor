@@ -18,15 +18,21 @@ import (
 // Injectors from wire.go:
 
 func SetupApp() (*App, error) {
+	config, err := LoadConfig()
+	if err != nil {
+		return nil, err
+	}
+	serverConfig := &config.Server
 	logger := slog.Default()
 	handlerFactory := handlers.NewHandlerFactory(logger)
-	v := wireproviders.ProvideMiddlewares()
+	tracingMiddlewareConfig := config.Tracing
+	v := wireproviders.ProvideMiddlewares(tracingMiddlewareConfig)
 	router := routes.NewRouter(handlerFactory, v)
-	server := restserver.NewServerFromConfig(router)
+	server := restserver.NewServerFromConfig(serverConfig, router)
 	tracerProviderShutdown, err := otel.SetupOtel()
 	if err != nil {
 		return nil, err
 	}
-	app := NewApp(server, logger, tracerProviderShutdown)
+	app := NewApp(config, server, logger, tracerProviderShutdown)
 	return app, nil
 }
