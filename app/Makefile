@@ -13,3 +13,12 @@ wire:
 
 build:
 	go build -o ./dist/cloud-file-rest ./cmd/cloud-file-rest
+
+run:
+	./dist/cloud-file-rest
+
+mocks:
+	mockery
+
+unit:
+	go test ./internal/... -timeout 30s

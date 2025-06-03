@@ -32,7 +32,6 @@ func run(ctx context.Context) int {
 
 	// Run the REST server.
 	go func() {
-		// ListenAndServe always returns a non-nil error. In case of Server.Shutdown it returns a ErrServerClosed error.
 		if err := app.server.Run(); err != http.ErrServerClosed {
 			app.logger.ErrorContext(ctx, "failed to start REST server", "error", err)
 			stop()

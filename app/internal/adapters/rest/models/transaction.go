@@ -3,7 +3,6 @@ package models
 import (
 	"app/internal/domain/entities"
 	"context"
-	"errors"
 	"log/slog"
 	"time"
 
@@ -11,54 +10,44 @@ import (
 )
 
 type TransactionCreate struct {
-	UserID    string  `json:"userId"`
-	Amount    float64 `json:"amount"`
-	Currency  string  `json:"currency"`
-	Timestamp string  `json:"timestamp"`
+	UserID    string `json:"userId"`
+	Amount    int64  `json:"amount"`
+	Currency  string `json:"currency"`
+	Timestamp string `json:"timestamp"`
 }
 
 func (t *TransactionCreate) ToDomain(ctx context.Context, logger *slog.Logger) (*entities.Transaction, error) {
 	userID, err := uuid.Parse(t.UserID)
 	if err != nil {
 		logger.ErrorContext(ctx,
-			"invalid user id",
+			"failed to parse user id",
 			"user_id", t.UserID,
 			"error", err,
 		)
 
-		return nil, err
-	}
-
-	if t.Amount < 0 {
-		logger.ErrorContext(ctx,
-			"invalid amount",
-			"amount", t.Amount,
-			"error", "cannot be negative",
-		)
-
-		return nil, errors.New("amount cannot be negative")
+		return nil, entities.NewInvalidInputError("failed to parse user id")
 	}
 
 	currency, err := entities.ParseCurrency(t.Currency)
 	if err != nil {
 		logger.ErrorContext(
 			ctx,
-			"invalid currency",
+			"failed to parse currency",
 			"currency", t.Currency,
 			"error", err)
 
-		return nil, err
+		return nil, entities.NewInvalidInputError("failed to parse currency")
 	}
 
-	timestamp, err := time.Parse(time.RFC3339, t.Currency)
+	timestamp, err := time.Parse(time.RFC3339, t.Timestamp)
 	if err != nil {
 		logger.ErrorContext(ctx,
-			"invalid timestamp",
+			"failed to parse timestamp",
 			"timestamp", t.Timestamp,
 			"error", err,
 		)
 
-		return nil, err
+		return nil, entities.NewInvalidInputError("failed to parse timestamp")
 	}
 
 	return &entities.Transaction{

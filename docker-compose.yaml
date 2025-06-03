@@ -5,8 +5,8 @@ services:
       dockerfile: Dockerfile.dev
     container_name: go-dev
     volumes:
-      - .:/workspace
+      - .:/home/dev/ws
       - ~/.gitconfig:/home/dev/.gitconfig:ro
-    working_dir: /workspace
+    working_dir: /home/dev/ws
     user: dev
     command: sleep infinity

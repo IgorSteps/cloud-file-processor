@@ -13,7 +13,7 @@ type Transaction struct {
 	Generation uint
 
 	UserID    uuid.UUID
-	Amount    float64
+	Amount    int64
 	Currency  Currency
 	Timestamp time.Time
 }
