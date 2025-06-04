@@ -27,6 +27,8 @@ type FileUploader interface {
 func (s *UploadFile) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	var file models.FileUpload
 
+	s.backupLogger.InfoContext(r.Context(), "hello!")
+
 	err := json.NewDecoder(r.Body).Decode(&file)
 	if err != nil {
 		s.backupLogger.ErrorContext(

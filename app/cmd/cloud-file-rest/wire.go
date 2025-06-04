@@ -4,8 +4,6 @@
 package main
 
 import (
-	"log/slog"
-
 	"github.com/google/wire"
 
 	"app/internal/adapters/rest/handlers"
@@ -20,7 +18,7 @@ func SetupApp() (*App, error) {
 		LoadConfig,
 		wire.FieldsOf(new(*Config), "Server", "Tracing"),
 
-		slog.Default,
+		wireproviders.ProvideOtelInstrumentedSlogLogger,
 		otel.SetupOtel,
 
 		handlers.NewHandlerFactory,
@@ -30,7 +28,7 @@ func SetupApp() (*App, error) {
 		routes.NewRouter,
 		restserver.NewServerFromConfig,
 
-		NewApp,
+		NewAppFromConfig,
 	)
 
 	return &App{}, nil

@@ -12,7 +12,6 @@ import (
 	"app/internal/drivers/otel"
 	"app/internal/drivers/restserver"
 	"app/internal/drivers/wireproviders"
-	"log/slog"
 )
 
 // Injectors from wire.go:
@@ -23,7 +22,7 @@ func SetupApp() (*App, error) {
 		return nil, err
 	}
 	serverConfig := &config.Server
-	logger := slog.Default()
+	logger := wireproviders.ProvideOtelInstrumentedSlogLogger()
 	handlerFactory := handlers.NewHandlerFactory(logger)
 	tracingMiddlewareConfig := config.Tracing
 	v := wireproviders.ProvideMiddlewares(tracingMiddlewareConfig)
@@ -33,6 +32,6 @@ func SetupApp() (*App, error) {
 	if err != nil {
 		return nil, err
 	}
-	app := NewApp(config, server, logger, tracerProviderShutdown)
+	app := NewAppFromConfig(config, server, logger, tracerProviderShutdown)
 	return app, nil
 }

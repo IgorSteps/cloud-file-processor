@@ -7,6 +7,10 @@ import (
 	"time"
 )
 
+type AppConfig struct {
+	ShutdownTimeoutSecs uint64
+}
+
 type App struct {
 	config                 *Config
 	server                 *restserver.Server
@@ -15,7 +19,7 @@ type App struct {
 	shutdownTimeout        time.Duration
 }
 
-func NewApp(
+func NewAppFromConfig(
 	config *Config,
 	server *restserver.Server,
 	logger *slog.Logger,

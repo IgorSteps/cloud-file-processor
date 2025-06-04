@@ -13,15 +13,11 @@ type Config struct {
 	Tracing middleware.TracingMiddlewareConfig
 }
 
-type AppConfig struct {
-	ShutdownTimeoutSecs uint64
-}
-
 // LoadConfig reads configuration from ./config.yaml file.
 func LoadConfig() (*Config, error) {
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
-	viper.AddConfigPath(".")
+	viper.AddConfigPath("./cmd/cloud-file-rest")
 
 	if err := viper.ReadInConfig(); err != nil {
 		return nil, err
