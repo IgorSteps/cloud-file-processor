@@ -44,7 +44,7 @@ func (s *UploadFile) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			"failed to convert file upload request to domain",
 			"error", err,
 		)
-		http.Error(w, "request body is invalid", http.StatusBadRequest)
+		http.Error(w, "file is invalid", http.StatusBadRequest)
 		return
 	}
 
