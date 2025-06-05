@@ -10,13 +10,13 @@ import (
 )
 
 type UploadFile struct {
-	backupLogger *slog.Logger
+	logger *slog.Logger
 	//fileUploader FileUploader
 }
 
-func NewUploadFile(backupLogger *slog.Logger) *UploadFile {
+func NewUploadFile(logger *slog.Logger) *UploadFile {
 	return &UploadFile{
-		backupLogger: backupLogger,
+		logger: logger,
 	}
 }
 
@@ -27,11 +27,9 @@ type FileUploader interface {
 func (s *UploadFile) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	var file models.FileUpload
 
-	s.backupLogger.InfoContext(r.Context(), "hello!")
-
 	err := json.NewDecoder(r.Body).Decode(&file)
 	if err != nil {
-		s.backupLogger.ErrorContext(
+		s.logger.ErrorContext(
 			r.Context(),
 			"failed to parse file upload request",
 			"error", err,
@@ -40,9 +38,9 @@ func (s *UploadFile) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = file.ToDomain(r.Context(), s.backupLogger)
+	_, err = file.ToDomain(r.Context(), s.logger)
 	if err != nil {
-		s.backupLogger.ErrorContext(r.Context(),
+		s.logger.ErrorContext(r.Context(),
 			"failed to convert file upload request to domain",
 			"error", err,
 		)
@@ -54,7 +52,7 @@ func (s *UploadFile) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// if err != nil {
 	// 	switch err.(type) {
 	// 	default:
-	// 		s.backupLogger.ErrorContext(r.Context(), "unknown error while uploading file", "error", err)
+	// 		s.logger.ErrorContext(r.Context(), "unknown error while uploading file", "error", err)
 	// 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	// 		return
 	// 	}
@@ -63,7 +61,7 @@ func (s *UploadFile) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	err = json.NewEncoder(w).Encode("hi")
 	if err != nil {
-		s.backupLogger.ErrorContext(r.Context(),
+		s.logger.ErrorContext(r.Context(),
 			"failed to encode response",
 			"response", "TODO",
 			"error", err,

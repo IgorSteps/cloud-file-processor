@@ -6,15 +6,15 @@ import (
 )
 
 type HandlerFactory struct {
-	backupLogger *slog.Logger
+	logger *slog.Logger
 }
 
-func NewHandlerFactory(backupLogger *slog.Logger) *HandlerFactory {
+func NewHandlerFactory(logger *slog.Logger) *HandlerFactory {
 	return &HandlerFactory{
-		backupLogger: backupLogger,
+		logger: logger,
 	}
 }
 
 func (s *HandlerFactory) UploadFile() http.Handler {
-	return NewUploadFile(s.backupLogger)
+	return NewUploadFile(s.logger)
 }

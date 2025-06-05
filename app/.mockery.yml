@@ -14,3 +14,6 @@ packages:
   app/internal/adapters/rest/routes:
     config:
       all: true
+  app/internal/domain/repositories:
+    config:
+      all: true

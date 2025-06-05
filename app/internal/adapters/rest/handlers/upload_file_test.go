@@ -23,7 +23,7 @@ func TestUploadFile_ServeHTTP(t *testing.T) {
 	)
 
 	type fields struct {
-		backupLogger *slog.Logger
+		logger *slog.Logger
 	}
 	type args struct {
 		w *httptest.ResponseRecorder
@@ -41,7 +41,7 @@ func TestUploadFile_ServeHTTP(t *testing.T) {
 		{
 			name: "happy path",
 			fields: fields{
-				backupLogger: slog.Default(),
+				logger: slog.Default(),
 			},
 			args: args{
 				w: httptest.NewRecorder(),
@@ -63,7 +63,7 @@ func TestUploadFile_ServeHTTP(t *testing.T) {
 		{
 			name: "unhappy path: invalid request body",
 			fields: fields{
-				backupLogger: slog.Default(),
+				logger: slog.Default(),
 			},
 			args: args{
 				w: httptest.NewRecorder(),
@@ -76,7 +76,7 @@ func TestUploadFile_ServeHTTP(t *testing.T) {
 		{
 			name: "unhappy path: invalid file",
 			fields: fields{
-				backupLogger: slog.Default(),
+				logger: slog.Default(),
 			},
 			args: args{
 				w: httptest.NewRecorder(),
@@ -91,7 +91,7 @@ func TestUploadFile_ServeHTTP(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			requestBody, _ := json.Marshal(tt.args.b)
 			testReq, _ := http.NewRequest(http.MethodPost, "/file", bytes.NewBuffer(requestBody))
-			handler := handlers.NewUploadFile(tt.fields.backupLogger)
+			handler := handlers.NewUploadFile(tt.fields.logger)
 
 			handler.ServeHTTP(tt.args.w, testReq)
 
