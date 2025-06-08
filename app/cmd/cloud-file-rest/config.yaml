@@ -1,0 +1,8 @@
+server:
+  address: localhost:3000
+
+tracing:
+  serviceName: cloud-file-rest
+
+app:
+  shutdownTimeoutSecs: 30

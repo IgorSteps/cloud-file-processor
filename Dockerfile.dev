@@ -1,0 +1,22 @@
+FROM golang:1.24
+
+ARG USERNAME=dev
+ARG USER_UID=1000
+ARG USER_GID=1000
+
+# Install tools and create user
+RUN apt-get update && apt-get install -y \
+    bash curl git vim less sudo \
+ && groupadd --gid $USER_GID $USERNAME \
+ && useradd --uid $USER_UID --gid $USER_GID -m -s /bin/bash $USERNAME 
+
+USER $USERNAME
+ 
+RUN curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s -- -b $(go env GOPATH)/bin v2.1.6 && \
+    go install github.com/vektra/mockery/v3@v3.3.2 && \
+    go install github.com/cweill/gotests/gotests@v1.6.0 && \
+    go install -v github.com/go-delve/delve/cmd/dlv@latest && \
+    go install github.com/google/wire/cmd/wire@latest
+ 
+WORKDIR /home/dev/ws
+CMD ["bash"]
